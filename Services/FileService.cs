@@ -36,16 +36,16 @@ public static class FileService
         var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}";
         if (Directory.Exists(path + $"\\documents-cont"))
         {
-            using var outputFileStream = new FileStream(file, FileMode.Create);
-            inputStream.CopyTo(outputFileStream);
+            await using var outputFileStream = new FileStream(file, FileMode.Create);
+            await inputStream.CopyToAsync(outputFileStream);
         }
         else
         {
             Directory.CreateDirectory(path + $"\\documents-cont");
-            using var outputFileStream = new FileStream(file, FileMode.Create);
-            inputStream.CopyTo(outputFileStream);
+            await using var outputFileStream = new FileStream(file, FileMode.Create);
+            await inputStream.CopyToAsync(outputFileStream);
         }
-        inputStream.Dispose();
+        await inputStream.DisposeAsync();
 
         if (string.IsNullOrEmpty(docxUrl)) return false;
 
@@ -63,11 +63,8 @@ public static class FileService
         }
         else
         {
-            if (idProcess != null)
-            {
-                idProcess.Kill();
-                File.Delete(file);
-            }
+            idProcess.Kill();
+            File.Delete(file);
         }
         return false;
     }
@@ -93,7 +90,7 @@ public static class FileService
         
         if (string.IsNullOrEmpty(docxUrl)) return false;
 
-        var idProcess = Process.Start(@$"""{docxUrl}""", file);
+        Process.Start(@$"""{docxUrl}""", file);
 
         return true;
     }
@@ -118,7 +115,7 @@ public static class FileService
 
         if (string.IsNullOrEmpty(docxUrl)) return false;
 
-        var idProcess = Process.Start(@$"""{docxUrl}""", file);
+        Process.Start(@$"""{docxUrl}""", file);
 
         return true;
 

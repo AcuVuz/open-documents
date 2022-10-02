@@ -20,16 +20,14 @@ public static class ApiService
         req.Headers.Add("auth-token", token);
         req.Accept = "application/json";
         using var response = await req.GetResponseAsync();
-        WebHeaderCollection headers = response.Headers;
+        var headers = response.Headers;
 
-        for (int i = 0; i < headers.Count; i++)
+        for (var i = 0; i < headers.Count; i++)
         {
-            if(headers[i].Contains("filename"))
-            {
-                var fileName = headers[i].Split("filename=");
-                reportName = fileName[1];
-            }
-            
+            if (!headers[i]!.Contains("filename")) continue;
+            var fileName = headers[i]?.Split("filename=");
+            reportName = fileName[1];
+
         }
         await using var responseStream = response.GetResponseStream();
 
@@ -50,15 +48,13 @@ public static class ApiService
         req.Accept = "application/json";
         using var response = await req.GetResponseAsync();
 
-        WebHeaderCollection headers = response.Headers;
+        var headers = response.Headers;
 
-        for (int i = 0; i < headers.Count; i++)
+        for (var i = 0; i < headers.Count; i++)
         {
-            if (headers[i].Contains("filename"))
-            {
-                var fileName = headers[i].Split("filename=");
-                reportName = fileName[1];
-            }
+            if (!headers[i]!.Contains("filename")) continue;
+            var fileName = headers[i]?.Split("filename=");
+            reportName = fileName[1];
 
         }
         await using var responseStream = response.GetResponseStream();
