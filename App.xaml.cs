@@ -11,7 +11,8 @@ public partial class App
 {
     private static readonly string AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-    private static readonly string Host = "http://jmu.api.lgpu.org";
+    private const string Host = "http://jmu.api.lgpu.org";
+
     private async void AppStartup(object sender, StartupEventArgs e)
     {
         if (e.Args.Length <= 0)

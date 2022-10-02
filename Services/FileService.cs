@@ -14,7 +14,7 @@ public static class FileService
         // Если реестр есть 
         #pragma warning disable CA1416 // Validate platform compatibility
         return Registry.ClassesRoot.OpenSubKey("jmuagent\\shell\\open\\command") != null;
-#pragma warning restore CA1416 // Validate platform compatibility
+        #pragma warning restore CA1416 // Validate platform compatibility
     }
 
     public static void CreateRegister()
