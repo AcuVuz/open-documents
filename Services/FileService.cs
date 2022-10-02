@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -27,12 +28,56 @@ public static class FileService
         #pragma warning restore CA1416 // Validate platform compatibility
     }
 
-    public static bool SaveReportDocx(Stream inputStream, string reportName, string docxUrl)
+    public static async Task<bool> SaveModalReportDocxAsync(Stream inputStream, string reportName, string docxUrl)
     {
         // Получить путь рабочего стола
         const string path = "D:";
 
-        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.docx";
+        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}";
+        if (Directory.Exists(path + $"\\documents-cont"))
+        {
+            using var outputFileStream = new FileStream(file, FileMode.Create);
+            inputStream.CopyTo(outputFileStream);
+        }
+        else
+        {
+            Directory.CreateDirectory(path + $"\\documents-cont");
+            using var outputFileStream = new FileStream(file, FileMode.Create);
+            inputStream.CopyTo(outputFileStream);
+        }
+        inputStream.Dispose();
+
+        if (string.IsNullOrEmpty(docxUrl)) return false;
+
+        var idProcess = Process.Start(@$"""{docxUrl}""", file);
+
+        if (MessageBox.Show("Сохранить файл?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.No)
+        {
+            object fileName = new
+            {
+
+                filename = reportName,
+            };
+
+            await ApiService.JsonPostSave("secret", "http://jmu.api.lgpu.org/reports-education" + "/general/statements/save", "POST", fileName);
+        }
+        else
+        {
+            if (idProcess != null)
+            {
+                idProcess.Kill();
+                File.Delete(file);
+            }
+        }
+        return false;
+    }
+
+    public static bool SaveReportDocxAsync(Stream inputStream, string reportName, string docxUrl)
+    {
+        // Получить путь рабочего стола
+        const string path = "D:";
+
+        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}";
         if (Directory.Exists(path + $"\\documents-cont"))
         {
             using var outputFileStream = new FileStream(file, FileMode.Create);
@@ -47,21 +92,17 @@ public static class FileService
         inputStream.Dispose();
         
         if (string.IsNullOrEmpty(docxUrl)) return false;
-        _ = Process.Start(@$"""{docxUrl}""", file);
-        
-       /* if (MessageBox.Show("Сохранить файл?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
-            MessageBoxResult.No) return true;
-        File.Delete(file);
-        return false;
-        */
-       return true;
+
+        var idProcess = Process.Start(@$"""{docxUrl}""", file);
+
+        return true;
     }
     public static bool SaveReportExcel(Stream inputStream, string reportName , string docxUrl)
     {
         // Получить путь рабочего стола
         const string path = "D:";
 
-        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.xlsx";
+        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}";
         if (Directory.Exists(path + $"\\documents-cont"))
         {
             using var outputFileStream = new FileStream(file, FileMode.Create);
@@ -74,8 +115,11 @@ public static class FileService
             inputStream.CopyTo(outputFileStream);
         }
         inputStream.Dispose();
+
         if (string.IsNullOrEmpty(docxUrl)) return false;
-        _ = Process.Start(@$"""{docxUrl}""", file);
+
+        var idProcess = Process.Start(@$"""{docxUrl}""", file);
+
         return true;
 
     }
