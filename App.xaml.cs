@@ -19,11 +19,11 @@ public partial class App
         {
             var mainWindow = new MainWindow();
             // Если реестр не найден, тогда создать
-            if (!FileService.CheckClasses())
-            {
+            //if (!FileService.CheckClasses())
+            //{
                 // Создать реестр
                 FileService.CreateRegister();
-            }
+           // }
             mainWindow.Show();
         }
         else
@@ -42,7 +42,7 @@ public partial class App
                     if (split[1].Contains("word"))
                     {
                         split[1] = split[1].Replace("word/", string.Empty);
-
+                        //MessageBox.Show(split[1]);
                         await ApiService.JsonModalPostWithToken("secret", Host + split[1], "GET", "Документ.docx", "word", jsonSettings?.Word);
 
                     }
@@ -50,6 +50,7 @@ public partial class App
                     {
                         split[1] = split[1].Replace("excel/", string.Empty);
 
+                        //MessageBox.Show(split[1]);
                         await ApiService.JsonModalPostWithToken("secret", Host + split[1], "GET", "Документ.xlsx", "excel", jsonSettings?.Excel);
 
                     }

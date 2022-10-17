@@ -26,11 +26,21 @@ public static class ApiService
         {
             if (!headers[i]!.Contains("filename")) continue;
             var fileName = headers[i]?.Split("filename=");
-            reportName = fileName[1];
+            if (fileName[1].Contains(';'))
+            {
+                reportName = fileName[1].Split(';')[0];
+            }
+            else
+            {
+                reportName = fileName[1];
+            }
+            
+            //reportName = fileName[1];
+           
 
         }
         await using var responseStream = response.GetResponseStream();
-
+        // MessageBox.Show(docxUrl);
         return await FileService.SaveModalReportDocxAsync(responseStream, reportName, docxUrl);
         /*return typeDocuments == "word"
             ? await FileService.SaveModalReportDocxAsync(responseStream, reportName, docxUrl)

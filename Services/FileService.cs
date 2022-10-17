@@ -29,11 +29,11 @@ public static class FileService
     }
 
     public static async Task<bool> SaveModalReportDocxAsync(Stream inputStream, string reportName, string docxUrl)
-    {
+    { 
         // Получить путь рабочего стола
         const string path = "D:";
-
-        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_")}";
+        var file = path + $"\\documents-cont\\{reportName.Replace(" ", "_").Trim('"')}";
+        //MessageBox.Show(file);
         if (Directory.Exists(path + $"\\documents-cont"))
         {
             await using var outputFileStream = new FileStream(file, FileMode.Create);
@@ -46,8 +46,8 @@ public static class FileService
             await inputStream.CopyToAsync(outputFileStream);
         }
         await inputStream.DisposeAsync();
-
         if (string.IsNullOrEmpty(docxUrl)) return false;
+
 
         var idProcess = Process.Start(@$"""{docxUrl}""", file);
 
