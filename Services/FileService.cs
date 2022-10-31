@@ -63,7 +63,8 @@ public static class FileService
         }
         else
         {
-            idProcess.Kill();
+
+            idProcess?.Kill();
             File.Delete(file);
         }
         return false;
