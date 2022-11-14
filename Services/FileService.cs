@@ -62,7 +62,8 @@ public static class FileService
         }
         else
         {
-            await ApiService.JsonPostSave("secret", "http://jmu.api.lgpu.org/reports-education" + "/general/statements/deleteCache", "DELETE", fileName);
+            // MessageBox.Show(fileName.ToString());
+            await ApiService.JsonPostSave("secret", "http://jmu.api.lgpu.org/reports-education" + $"/general/statements/deleteCache/?filename={reportName}", "DELETE", fileName);
             idProcess?.Kill();
             File.Delete(file);
         }
