@@ -51,19 +51,18 @@ public static class FileService
 
         var idProcess = Process.Start(@$"""{docxUrl}""", file);
 
+        object fileName = new
+        {
+            filename = reportName,
+        };
+        
         if (MessageBox.Show("Сохранить файл?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.No)
         {
-            object fileName = new
-            {
-
-                filename = reportName,
-            };
-
             await ApiService.JsonPostSave("secret", "http://jmu.api.lgpu.org/reports-education" + "/general/statements/save", "POST", fileName);
         }
         else
         {
-
+            await ApiService.JsonPostSave("secret", "http://jmu.api.lgpu.org/reports-education" + "/general/statements/deleteCache", "DELETE", fileName);
             idProcess?.Kill();
             File.Delete(file);
         }

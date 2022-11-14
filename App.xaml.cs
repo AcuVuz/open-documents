@@ -55,8 +55,6 @@ public partial class App
 
                     }
                 }
-                // Не 
-                // Еще не тестил на эту ветку 
                 else
                 {
                     if (split[1].Contains("word"))

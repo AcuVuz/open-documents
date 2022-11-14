@@ -26,14 +26,7 @@ public static class ApiService
         {
             if (!headers[i]!.Contains("filename")) continue;
             var fileName = headers[i]?.Split("filename=");
-            if (fileName[1].Contains(';'))
-            {
-                reportName = fileName[1].Split(';')[0];
-            }
-            else
-            {
-                reportName = fileName[1];
-            }
+            reportName = fileName[1].Contains(';') ? fileName[1].Split(';')[0] : fileName[1];
             
             //reportName = fileName[1];
            
