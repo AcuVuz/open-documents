@@ -59,14 +59,16 @@ public partial class App
                 {
                     if (split[1].Contains("word"))
                     {
-                        split[1] = split[1].Replace("word/", string.Empty);
+                        split[1] = split[1].Replace("word", string.Empty);
+
+                        // MessageBox.Show(split[1]);
 
                         await ApiService.JsonPostWithToken("secret", Host + split[1], "GET", "Документ.docx", "word", jsonSettings?.Word);
 
                     }
                     else if (split[1].Contains("excel"))
                     {
-                        split[1] = split[1].Replace("excel/", string.Empty);
+                        split[1] = split[1].Replace("excel", string.Empty);
 
                         await ApiService.JsonPostWithToken("secret", Host + split[1], "GET", "Документ.xlsx", "excel", jsonSettings?.Excel);
 
@@ -75,6 +77,7 @@ public partial class App
             }
             catch (WebException ex)
             {
+                
                 if (ex.Status == WebExceptionStatus.ProtocolError)
                 {
                     if (ex.Response is HttpWebResponse response)
@@ -86,7 +89,7 @@ public partial class App
                 }
                 else
                 {
-                    _ = MessageBox.Show("Не удалось получить данные с API!", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(ex.Message);
                 }
             }
             finally 
